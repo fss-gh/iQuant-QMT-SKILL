@@ -3,19 +3,13 @@
   "name": "iquant-qmt-skill",
   "description": "Complete QMT (迅投极速策略交易系统) Python development skill library with strategy guides, API references, and runnable code examples for backtesting and live trading",
   "owner": {
-    "name": "iQuant QMT",
-    "email": "qmt-skill@iquant.dev"
+    "name": "iQuant QMT"
   },
   "plugins": [
     {
       "name": "iquant-qmt-python-skill",
-      "description": "Complete QMT Python strategy development skill — 7 core modules covering system overview, execution mechanisms (handlebar/subscribe/run_time), backtesting guide, live trading guide, market data API, trading API, and 50+ best practices. Includes 4 fully runnable strategy examples (dual moving average backtest, live trading, event-driven subscribe, timer run_time) with 1500+ lines of code. Use this skill whenever you work with QMT, iQuant, 迅投, quantitative trading strategy development, backtesting, live trading, passorder, get_market_data_ex, or any Python code targeting the QMT platform.",
-      "author": {
-        "name": "iQuant QMT"
-      },
-      "category": "finance",
-      "source": "./iQuant SKILL",
-      "homepage": "https://github.com/anthropics/iQuant-QMT-SKILL"
+      "source": "./skills/iquant-qmt-python-skill",
+      "description": "Complete QMT Python strategy development skill — 7 core modules covering system overview, execution mechanisms (handlebar/subscribe/run_time), backtesting guide, live trading guide, market data API, trading API, and 50+ best practices. Includes 4 fully runnable strategy examples with 1500+ lines of code. Use this skill whenever you work with QMT, iQuant, 迅投, quantitative trading strategy development, backtesting, live trading, passorder, get_market_data_ex, or any Python code targeting the QMT platform."
     }
   ]
 }

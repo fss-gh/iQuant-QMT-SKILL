@@ -1,0 +1,7 @@
+{
+  "name": "iquant-qmt-python-skill",
+  "description": "Complete QMT Python strategy development skill — system overview, execution mechanisms, backtesting, live trading, API references, and runnable code examples. Use when working with QMT, iQuant, 迅投, quantitative trading, or Python code targeting the QMT platform.",
+  "author": {
+    "name": "iQuant QMT"
+  }
+}
