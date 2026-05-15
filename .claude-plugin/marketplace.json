@@ -1,0 +1,174 @@
+{
+  "name": "iquant-qmt-skill",
+  "display_name": "iQuant QMT Python Strategy Development Skill",
+  "description": "Complete QMT (迅投极速策略交易系统) Python development skill library with strategy guides, API references, and runnable code examples for backtesting and live trading.",
+  "version": "1.0.0",
+  "author": "QMT知识库",
+  "license": "MIT",
+  "homepage": "https://github.com/anthropics/iQuant-QMT-SKILL",
+  "repository": "https://github.com/anthropics/iQuant-QMT-SKILL",
+  "keywords": [
+    "QMT",
+    "iQuant",
+    "quantitative-trading",
+    "backtesting",
+    "live-trading",
+    "Python",
+    "strategy-development",
+    "stock-trading",
+    "technical-analysis",
+    "algorithmic-trading"
+  ],
+  "category": "finance",
+  "subcategory": "quantitative-trading",
+  "language": [
+    "zh-CN",
+    "en"
+  ],
+  "compatibility": {
+    "platforms": ["windows"],
+    "qmt_version": "2024+",
+    "python_version": "3.6"
+  },
+  "skill": {
+    "entry": "iQuant SKILL/SKILL.md",
+    "trigger_phrases": [
+      "QMT策略开发",
+      "QMT回测",
+      "QMT实盘交易",
+      "迅投量化交易",
+      "QMT Python",
+      "handlebar策略",
+      "subscribe订阅",
+      "run_time定时",
+      "passorder下单",
+      "get_market_data_ex"
+    ],
+    "modules": [
+      {
+        "id": "overview",
+        "name": "QMT系统概述",
+        "path": "iQuant SKILL/qmt-skill/overview.md",
+        "description": "QMT系统架构、两种交易模式和基本概念"
+      },
+      {
+        "id": "execution-mechanisms",
+        "name": "三大执行机制",
+        "path": "iQuant SKILL/qmt-skill/execution-mechanisms.md",
+        "description": "handlebar（K线驱动）、subscribe（事件驱动）、run_time（定时器）"
+      },
+      {
+        "id": "backtesting-guide",
+        "name": "回测完全指南",
+        "path": "iQuant SKILL/qmt-skill/backtesting-guide.md",
+        "description": "从零开始进行历史数据回测"
+      },
+      {
+        "id": "live-trading-guide",
+        "name": "实盘交易指南",
+        "path": "iQuant SKILL/qmt-skill/live-trading-guide.md",
+        "description": "部署实时策略和风险管理"
+      },
+      {
+        "id": "market-data-api",
+        "name": "行情数据API",
+        "path": "iQuant SKILL/qmt-skill/market-data-api.md",
+        "description": "所有市场数据获取函数参考"
+      },
+      {
+        "id": "trading-api",
+        "name": "交易API",
+        "path": "iQuant SKILL/qmt-skill/trading-api.md",
+        "description": "下单、查询、委托管理函数参考"
+      },
+      {
+        "id": "best-practices",
+        "name": "最佳实践",
+        "path": "iQuant SKILL/qmt-skill/best-practices.md",
+        "description": "50+个编码规范、优化技巧和风险控制模式"
+      }
+    ],
+    "examples": [
+      {
+        "id": "backtest-example",
+        "name": "双均线回测策略",
+        "path": "iQuant SKILL/qmt-skill/examples/backtest.md",
+        "mechanism": "handlebar",
+        "difficulty": "beginner",
+        "lines": 600
+      },
+      {
+        "id": "live-trading-example",
+        "name": "双均线实盘策略",
+        "path": "iQuant SKILL/qmt-skill/examples/live-trading.md",
+        "mechanism": "handlebar",
+        "difficulty": "intermediate",
+        "lines": 500
+      },
+      {
+        "id": "subscribe-example",
+        "name": "事件驱动策略",
+        "path": "iQuant SKILL/qmt-skill/examples/subscribe.md",
+        "mechanism": "subscribe",
+        "difficulty": "intermediate",
+        "lines": 400
+      },
+      {
+        "id": "run-time-example",
+        "name": "定时器策略",
+        "path": "iQuant SKILL/qmt-skill/examples/run-time.md",
+        "mechanism": "run_time",
+        "difficulty": "beginner",
+        "lines": 500
+      }
+    ],
+    "navigation": [
+      {
+        "id": "index",
+        "name": "总索引",
+        "path": "iQuant SKILL/qmt-skill/INDEX.md"
+      },
+      {
+        "id": "quickstart",
+        "name": "快速开始",
+        "path": "iQuant SKILL/QuickStart.md"
+      },
+      {
+        "id": "install",
+        "name": "安装指南",
+        "path": "iQuant SKILL/INSTALL.md"
+      },
+      {
+        "id": "summary",
+        "name": "项目总结",
+        "path": "iQuant SKILL/qmt-skill/SUMMARY.md"
+      }
+    ]
+  },
+  "stats": {
+    "modules": 7,
+    "examples": 4,
+    "total_words": 50000,
+    "code_lines": 1500,
+    "api_functions": 12,
+    "best_practices": 50,
+    "faq_items": 30
+  },
+  "links": {
+    "official_site": "http://www.thinktrader.net/",
+    "knowledge_base": "https://dict.thinktrader.net/",
+    "community": "https://xuntou.net/"
+  },
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-03-13",
+      "changes": [
+        "Initial release with 7 core modules",
+        "4 complete runnable strategy examples",
+        "Full API reference for market data and trading functions",
+        "50+ best practices and coding standards"
+      ]
+    }
+  ]
+}
