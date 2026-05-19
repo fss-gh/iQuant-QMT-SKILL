@@ -15,34 +15,40 @@
 
 ```python
 passorder(
-    buyorsell,                  # 买卖代码
-    price_type,                 # 价格类型
-    account,                    # 账号
-    stock,                      # 股票代码
-    order_type,                 # 订单类型
-    stop_price,                 # 止价
-    order_vol,                  # 成交数量
-    [strategy_name, quicktrade, remark, C]  # 可选参数
+    opType, orderType, accountid
+    , orderCode, prType, price, volume
+    , strategyName, quickTrade, userOrderId
+    , ContextInfo
 )
+'''
+passorder(
+    23 #opType 操作号
+    , 1101 #orderType 组合方式
+    , '1000044' #accountid 资金账号
+    , '600000.SH' #orderCode 股票代码
+    , 5 #prType 报价类型
+    , -1 #price 价格
+    , 2 #volume 下单量
+    , '示例下单' #strategyName 策略名称
+    , 1 #quickTrade 快速下单标记
+    , '投资备注' #userOrderId 投资备注
+    , C #ContextInfo 策略上下文
+)
+'''
+
 ```
 
 ### 参数详解
 
-#### 1. buyorsell - 买卖代码
+#### 1. opType - 买卖代码
 
 ```python
 # 股票账户（STOCK）
 23  # 买入
 24  # 卖出
-
-# 两融账户（CREDIT）
-33  # 融资买入
-34  # 融券卖出
-35  # 买入还款
-36  # 卖出还券
 ```
 
-#### 2. price_type - 价格订单类型
+#### 2. orderType - 价格订单类型
 
 ```python
 1101  # 市价单（推荐）- 按市场最优价格成交
@@ -65,22 +71,23 @@ stock = "600000.SH"    # 上海股票
 stock = "000001.SZ"    # 深圳股票
 ```
 
-#### 5. order_type - 订单类型
+#### 5. prType - 订单类型
 
 ```python
-5   # 普通下单
-14  # 实盘下单
+5   # 最新价
+11  # 指定价
+14  # 对手价(对方一档价格)
 # 其他类型可参考QMT文档
 ```
 
-#### 6. stop_price - 止价
+#### 6. price - 价格
 
 ```python
--1          # 不设置止价（推荐）
-1000000     # 止损价格（如有需要）
+-1          # prType 参数为非 11和49 的任意数字， 不设置止价（推荐）
+下单价       # prType 参数为 11时使用
 ```
 
-#### 7. order_vol - 成交数量
+#### 7. volume - 成交数量
 
 ```python
 # 股票必须是100的整数倍
@@ -92,22 +99,30 @@ stock = "000001.SZ"    # 深圳股票
 available_cash = 10000  # 可用资金
 price = 10.5           # 目标价格
 vol = int(available_cash / price / 100) * 100  # 向下取整到100的倍数
+
+# 可转债是10的整数倍
+10         # 1手（10张）
+100        # 10手（100张）
+1000       # 100手（1000张）
 ```
 
 #### 8. 可选参数 - strategy_name, quicktrade, remark, C
 
 ```python
-# 参数 4: 策略名称
+# 参数 strategyName: 策略名称
 strategy_name = '双均线策略'
+用来区分 order 委托和deal 成交来自不同的策略。
+根据该策略名，get_trade_detail_data，get_last_order_id 函数可以获取相应策略名对应的委托或成交集合。
+strategyName 只对同账号本地客户端有效，即 strategyName 只对当前客户端下的单进行策略区分，且该策略区分只能当前客户端使用。
 
-# 参数 5: 快速交易参数（关键！）
+# 参数 quickTrade: 快速交易参数
 quicktrade = 0          # 逐K线模式（等待K线完成）
 quicktrade = 2          # 立即下单模式（立刻执行）
 
-# 参数 6: 备注
+# 参数 userOrderId: 备注
 remark = '金叉买入信号'
 
-# 参数 7: ContextInfo对象
+# 参数 ContextInfo: ContextInfo对象
 C                       # 必须传入
 
 # 完整调用
@@ -187,38 +202,31 @@ passorder(23, 1101, account, stock, 14, -1, 100,
 ### 函数签名
 
 ```python
-data = get_trade_detail_data(
-    account,        # 账号
-    account_type,   # 账户类型
-    data_type       # 数据类型
-)
+get_trade_detail_data(accountID, strAccountType, strDatatype, strategyName)
 ```
 
-### 参数说明
+### 接口参数说明
 
-#### 1. account - 账号
+| 参数名 | 类型 | 说明 | 备注 |
+| :--- | :--- | :--- | :--- |
+| **accountID** | string | 资金账号 | 必填 |
+| **strAccountType** | string | 账号类型 | 必填。可选值：<br> - `'FUTURE'`：期货<br> - `'STOCK'`：股票<br> - `'CREDIT'`：信用<br> - `'HUGANGTONG'`：沪港通<br> - `'SHENGANGTONG'`：深港通<br> - `'STOCK_OPTION'`：期权 |
+| **strDatatype** | string | 要查询数据类型 | 必填。可选值：<br> - `ACCOUNT`：账号对象或信用账号对象<br> - `POSITION`：持仓<br> - `POSITION_STATISTICS`：持仓统计<br> - `ORDER`：委托<br> - `DEAL`：成交<br> - `TASK`：任务 |
+| **strategyName** | string | 策略名称 | 选填。只对成交和委托有效。<br>当用 `passorder` 下单时指定了此参数，查询时传入相同名称，可返回对应的委托或成交子集。 |
 
-```python
-account = "123456"      # 正确的账号ID
-account = "test"        # 回测或模拟账号
-```
+---
 
-#### 2. account_type - 账户类型
+### 返回值说明
+返回 **list**，列表内包含对应 `strDatatype` 的 Python 对象。
+> **提示**：可以通过 `dir(pythonobj)` 查看具体对象的属性列表。
 
-```python
-'stock'     # 股票账户
-'credit'    # 两融账户（融资融券）
-# 必须与实际账户类型相符
-```
-
-#### 3. data_type - 数据类型
-
-| 数据类型 | 说明 | 返回格式 |
-|---------|------|--------|
-| 'account' | 账户信息 | 列表（通常只有1个元素） |
-| 'position' | 持仓信息 | 列表（每个持仓一个元素） |
-| 'order' | 委托信息 | 列表（每个委托一个元素） |
-| 'deal' | 成交信息 | 列表（每个成交一个元素） |
+**支持的五种/六种数据对象（对应 strDatatype）：**
+* **ACCOUNT**：账号对象或信用账号对象
+* **POSITION**：持仓明细
+* **POSITION_STATISTICS**：持仓统计
+* **ORDER**：委托
+* **DEAL**：成交
+* **TASK**：任务
 
 ### 返回数据结构
 
@@ -232,9 +240,8 @@ acc = account[0]  # 取第一个账户
 
 # 常用字段
 acc.m_dAvailable         # 可用现金（单位：分）
-acc.m_dTotalAsset        # 总资产
-acc.m_dFloatProfit       # 浮动盈亏
-acc.m_dEnableBalance     # 可用余额
+acc.m_dBalance        # 总资产
+acc.m_dPositionProfit       # 浮动盈亏
 ```
 
 #### 持仓信息 ('position')
@@ -251,7 +258,7 @@ for pos in positions:
     pos.m_dOpenPrice            # 开仓价
     pos.m_dLastPrice            # 最新价
     pos.m_dProfit               # 持仓盈亏
-    pos.m_dProfitRatio          # 盈亏比率
+    pos.m_dProfitRate          # 盈亏比率
     pos.m_dMarketValue          # 市值
 ```
 
@@ -261,13 +268,14 @@ for pos in positions:
 orders = get_trade_detail_data('account_id', 'stock', 'order')
 
 for order in orders:
-    order.m_strOrderID          # 委托编号
-    order.m_nOrderStatus        # 委托状态（0-7）
-    order.m_nOrderVolume        # 委托数量
-    order.m_nTradedVolume       # 已成交量
-    order.m_dOrderPrice         # 委托价格
+    order.m_strOrderSysID          # 委托编号
+    order.m_nOrderStatus           # 委托状态（0-7）
+    order.m_nVolumeTotalOriginal        # 委托数量
+    order.m_nVolumeTraded       # 已成交量
+    order.m_dLimitPrice         # 委托价格
     order.m_strInstrumentID     # 证券代码
-    order.m_dOrderInsertTime    # 下单时间
+    order.m_strInsertTime       # 下单时间
+    order.m_strRemark           # 投资备注
 ```
 
 #### 成交信息 ('deal')
@@ -279,11 +287,10 @@ for deal in deals:
     deal.m_strTradeTime         # 成交时间
     deal.m_strInstrumentID      # 证券代码
     deal.m_strExchangeID        # 交易所代码（SH/SZ）
-    deal.m_nTradeDir            # 成交方向（0=买 1=卖）
-    deal.m_dTradePrice          # 成交价格
-    deal.m_nTradeVolume         # 成交数量
+    deal.m_nDirection            # 买卖方向 对于股票该值始终是48
+    deal.m_dPrice          # 成交均价
+    deal.m_nVolume         # 成交量，期货单位手，股票做到股
     deal.m_dCommission          # 手续费
-    deal.m_dProfit              # 持仓盈亏
     deal.m_strRemark            # 备注
 ```
 
@@ -323,7 +330,7 @@ def get_holdings(account_id, account_type='stock'):
             'can_use': pos.m_nCanUseVolume,
             'price': pos.m_dLastPrice,
             'profit': pos.m_dProfit,
-            'profit_ratio': pos.m_dProfitRatio
+            'profit_ratio': pos.m_dProfitRate
         }
     
     return holdings_dict
@@ -345,16 +352,15 @@ def get_last_deals(account_id, count=10):
     recent_deals = deals[-count:] if deals else []
     
     for deal in recent_deals:
-        direction = '买入' if deal.m_nTradeDir == 0 else '卖出'
         stock = f"{deal.m_strInstrumentID}.{deal.m_strExchangeID}"
         
         print(f"""
         时间: {deal.m_strTradeTime}
         品种: {stock}
         方向: {direction}
-        价格: {deal.m_dTradePrice}
-        数量: {deal.m_nTradeVolume}
-        成交额: {deal.m_dTradePrice * deal.m_nTradeVolume:.2f}
+        价格: {deal.m_dPrice}
+        数量: {deal.m_nVolume}
+        成交额: {deal.m_dPrice * deal.m_nVolume:.2f}
         手续费: {deal.m_dCommission:.2f}
         """)
     
@@ -373,10 +379,10 @@ def get_pending_orders(account_id):
         # 委托状态 1 或 2 表示未成交
         if order.m_nOrderStatus in [1, 2]:
             pending.append({
-                'order_id': order.m_strOrderID,
+                'order_id': order.m_strOrderSysID,
                 'stock': order.m_strInstrumentID,
-                'vol': order.m_nOrderVolume,
-                'price': order.m_dOrderPrice
+                'vol': order.m_nVolumeTotalOriginal,
+                'price': order.m_dLimitPrice
             })
     
     return pending
@@ -386,16 +392,17 @@ def get_pending_orders(account_id):
 
 ## 📋 委托状态码对照表
 
-| 状态码 | 状态名 | 说明 |
-|------|--------|------|
-| 0 | 未报 | 委托未发出 |
-| 1 | 待报 | 正在发送委托 |
-| 2 | 已报 | 委托已发送到交易所 |
-| 3 | 已撤 | 委托已撤销 |
-| 4 | 部成 | 委托部分成交 |
-| 5 | 已成 | 委托全部成交 |
-| 6 | 废单 | 委托无效（被拒绝） |
-| 7 | 待撤 | 正在撤销委托 |
+| 变量名称 | 数值 | 描述 |
+| :--- | :--- | :--- |
+| ENTRUST_STATUS_WAIT_REPORTING | 49 | 待报 |
+| ENTRUST_STATUS_REPORTED | 50 | 已报（已报出到柜台，待成交） |
+| ENTRUST_STATUS_REPORTED_CANCEL | 51 | 已报待撤（对已报状态的委托撤单吗，等待柜台处理撤单请求） |
+| ENTRUST_STATUS_PARTSUCC_CANCEL | 52 | 部成待撤（已报到柜台，已有部分成交，已发出对剩余部分的撤单，待柜台处理撤单请求） |
+| ENTRUST_STATUS_PART_CANCEL | 53 | 部撤（已报到柜台，已有部分成交，剩余部分已撤） |
+| ENTRUST_STATUS_CANCELED | 54 | 已撤 |
+| ENTRUST_STATUS_PART_SUCC | 55 | 部成（已报到柜台，已有部分成交） |
+| ENTRUST_STATUS_SUCCEEDED | 56 | 已成 |
+| ENTRUST_STATUS_JUNK | 57 | 废单（不符合报单条件，委托被打回，相关信息再委托的废单原因字段查看） |
 
 ---
 

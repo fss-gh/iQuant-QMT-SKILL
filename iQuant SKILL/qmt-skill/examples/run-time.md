@@ -148,8 +148,8 @@ def check_portfolio(C):
     # 输出持仓信息
     print(f"[{now}] ========== 持仓检查 ==========")
     print(f"可用现金: {acc.m_dAvailable / 100:.2f} 元")
-    print(f"总资产: {acc.m_dTotalAsset / 100:.2f} 元")
-    print(f"浮动盈亏: {acc.m_dFloatProfit / 100:.2f} 元")
+    print(f"总资产: {acc.m_dBalance / 100:.2f} 元")
+    print(f"浮动盈亏: {acc.m_dPositionProfit / 100:.2f} 元")
     print()
     
     if not positions:
@@ -158,7 +158,7 @@ def check_portfolio(C):
         print("当前持仓:")
         for pos in positions:
             stock = f"{pos.m_strInstrumentID}.{pos.m_strExchangeID}"
-            profit_ratio = pos.m_dProfitRatio * 100
+            profit_ratio = pos.m_dProfitRate * 100
             
             print(f"  {stock}: {pos.m_nVolume}股 成本{pos.m_dOpenPrice:.2f} "
                   f"现价{pos.m_dLastPrice:.2f} 盈亏{pos.m_dProfit:.2f} "
@@ -180,7 +180,7 @@ def check_stoploss(C):
     
     for pos in positions:
         stock = f"{pos.m_strInstrumentID}.{pos.m_strExchangeID}"
-        profit_ratio = pos.m_dProfitRatio
+        profit_ratio = pos.m_dProfitRate
         
         # 如果盈亏比超过止损线，执行止损
         if profit_ratio < stop_loss_pct:

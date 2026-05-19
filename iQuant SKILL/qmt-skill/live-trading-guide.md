@@ -433,8 +433,8 @@ def check_account_status(acct, acct_type):
     if account:
         acc = account[0]
         print(f"可用现金: {acc.m_dAvailable}")
-        print(f"总资产: {acc.m_dTotalAsset}")
-        print(f"浮动盈亏: {acc.m_dFloatProfit}")
+        print(f"总资产: {acc.m_dBalance}")
+        print(f"浮动盈亏: {acc.m_dPositionProfit}")
     
     # 持仓信息
     positions = get_trade_detail_data(acct, acct_type, 'position')
@@ -456,24 +456,24 @@ def check_account_status(acct, acct_type):
     deals = get_trade_detail_data(acct, acct_type, 'deal')
     for deal in deals[-10:]:  # 取最后10条
         print(f"成交时间: {deal.m_strTradeTime}")
-        print(f"成交价: {deal.m_dTradePrice}")
-        print(f"成交量: {deal.m_nTradeVolume}")
+        print(f"成交价: {deal.m_dPrice}")
+        print(f"成交量: {deal.m_nVolume}")
     
     return account, positions, orders, deals
 ```
 
 ### 委托状态码
-
-| 状态码 | 说明 |
-|------|------|
-| 0 | 未报 |
-| 1 | 待报 |
-| 2 | 已报 |
-| 3 | 已撤 |
-| 4 | 部成 |
-| 5 | 已成 |
-| 6 | 废单 |
-| 7 | 待撤 |
+| 变量名称 | 数值 | 描述 |
+| :--- | :--- | :--- |
+| ENTRUST_STATUS_WAIT_REPORTING | 49 | 待报 |
+| ENTRUST_STATUS_REPORTED | 50 | 已报（已报出到柜台，待成交） |
+| ENTRUST_STATUS_REPORTED_CANCEL | 51 | 已报待撤（对已报状态的委托撤单吗，等待柜台处理撤单请求） |
+| ENTRUST_STATUS_PARTSUCC_CANCEL | 52 | 部成待撤（已报到柜台，已有部分成交，已发出对剩余部分的撤单，待柜台处理撤单请求） |
+| ENTRUST_STATUS_PART_CANCEL | 53 | 部撤（已报到柜台，已有部分成交，剩余部分已撤） |
+| ENTRUST_STATUS_CANCELED | 54 | 已撤 |
+| ENTRUST_STATUS_PART_SUCC | 55 | 部成（已报到柜台，已有部分成交） |
+| ENTRUST_STATUS_SUCCEEDED | 56 | 已成 |
+| ENTRUST_STATUS_JUNK | 57 | 废单（不符合报单条件，委托被打回，相关信息再委托的废单原因字段查看） |
 
 ### 成交查询
 
@@ -489,9 +489,9 @@ def check_trades(acct, acct_type, max_records=20):
         时间: {deal.m_strTradeTime}
         股票: {deal.m_strInstrumentID}.{deal.m_strExchangeID}
         方向: {'买' if deal.m_nTradeDir == 0 else '卖'}
-        成交价: {deal.m_dTradePrice}
-        成交量: {deal.m_nTradeVolume}
-        成交额: {deal.m_nTradeVolume * deal.m_dTradePrice}
+        成交价: {deal.m_dPrice}
+        成交量: {deal.m_nVolume}
+        成交额: {deal.m_nVolume * deal.m_dPrice}
         费用: {deal.m_dCommission}
         """)
 ```
